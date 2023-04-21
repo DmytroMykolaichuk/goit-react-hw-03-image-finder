@@ -29,12 +29,7 @@ img {
 /*
  * Стили компонента App
  */
-.App {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-gap: 16px;
-  padding-bottom: 24px;
-}
+
 
 /*
  * Стили компонента Searchbar
@@ -76,7 +71,6 @@ img {
   width: 48px;
   height: 48px;
   border: 0;
-  background-image: url('https://image.flaticon.com/icons/svg/149/149852.svg');
   background-size: 40%;
   background-repeat: no-repeat;
   background-position: center;
@@ -168,7 +162,7 @@ img {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.767);
   z-index: 1200;
 }
 
@@ -181,6 +175,8 @@ img {
 * Стили компонента Buton (Load more)
 */
 .Button {
+  width: 300px;
+  margin: 0 auto;
   padding: 8px 16px;
   border-radius: 2px;
   background-color: #3f51b5;

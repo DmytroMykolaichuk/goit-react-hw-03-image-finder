@@ -1,4 +1,6 @@
 import React from 'react';
+import { FcSearch } from 'react-icons/fc';
+import PropTypes from 'prop-types';
 
 export const SearchBar = ({ onSubmit }) => {
   const detSearchResult = e => {
@@ -10,7 +12,7 @@ export const SearchBar = ({ onSubmit }) => {
     <header className="Searchbar">
       <form className="SearchForm" onSubmit={detSearchResult}>
         <button type="submit" className="SearchForm-button">
-          <span className="SearchForm-button-label">Search</span>
+          <FcSearch size="24" />
         </button>
 
         <input
@@ -24,4 +26,8 @@ export const SearchBar = ({ onSubmit }) => {
       </form>
     </header>
   );
+};
+
+SearchBar.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
 };

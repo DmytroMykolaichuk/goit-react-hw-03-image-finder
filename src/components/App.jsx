@@ -3,6 +3,7 @@ import axios from 'axios';
 import { SearchBar } from './Searchbar/SarchBar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
+import { AppContainer } from './App.styled';
 
 axios.defaults.baseURL =
   'https://pixabay.com/api/?key=33483798-cfc94c7459e9d93c6a5457b44&image_type=photo&orientation=horizontal';
@@ -10,30 +11,32 @@ axios.defaults.baseURL =
 export class App extends Component {
   state = {
     images: [],
-    search: '',
+    query: '',
+  };
+
+  handlaSubmit = async search => {
+    if (search.trim() === '') return;
+
+    const response = await axios.get(`&per_page=12&page=1&q=${search}`);
+    const imageResult = response.data.hits.map(
+      ({ id, webformatURL, largeImageURL, tags }) => ({
+        id,
+        webformatURL,
+        largeImageURL,
+        tags,
+      })
+    );
+    this.setState({
+      images: [...imageResult],
+      query: search,
+    });
   };
 
   page = 1;
-
-  handlaSubmit = async search => {
-    this.page = 1;
-    const response = await axios.get(`&per_page=12&page=1&q=${search}`);
-    console.log(response.data.hits);
-    const imageResult = response.data.hits.map(
-      ({ id, webformatURL, largeImageURL, tags }) => ({
-        id,
-        webformatURL,
-        largeImageURL,
-        tags,
-      })
-    );
-    this.setState({ images: imageResult, search });
-  };
-
-  handleLoadMore = async () => {
+  handleLoadMore = async query => {
     this.page += 1;
     const response = await axios.get(
-      `&per_page=12&page=${this.page}&q=${this.state.search}`
+      `&per_page=12&page=${this.page}&q=${query}`
     );
     const imageResult = response.data.hits.map(
       ({ id, webformatURL, largeImageURL, tags }) => ({
@@ -43,25 +46,21 @@ export class App extends Component {
         tags,
       })
     );
-    this.setState(prev => ({ images: [...prev.images, ...imageResult] }));
+    this.setState(prev => ({
+      images: [...prev.images, ...imageResult],
+    }));
   };
 
   render() {
+    const { images, query } = this.state;
     return (
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr',
-          gridGap: '16px',
-          paddingBottom: '24px',
-        }}
-      >
+      <AppContainer>
         <SearchBar onSubmit={this.handlaSubmit} />
-        <ImageGallery gallery={this.state.images} />
-        {this.state.images.length > 0 && (
-          <Button onClick={this.handleLoadMore} />
+        <ImageGallery gallery={images} />
+        {images.length > 0 && (
+          <Button onClick={this.handleLoadMore} search={query} />
         )}
-      </div>
+      </AppContainer>
     );
   }
 }
