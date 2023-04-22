@@ -6,6 +6,7 @@ export const SearchBar = ({ onSubmit }) => {
   const detSearchResult = e => {
     e.preventDefault();
     onSubmit(e.currentTarget.elements.search.value);
+    e.currentTarget.elements.search.value = '';
   };
 
   return (
