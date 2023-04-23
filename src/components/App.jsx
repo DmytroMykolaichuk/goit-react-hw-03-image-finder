@@ -12,20 +12,24 @@ axios.defaults.baseURL =
 
 export class App extends Component {
   state = {
-    images: null,
+    images: [],
     query: '',
     status: 'idle',
+    isLoading: false,
+    isLoadMore: false,
   };
 
   handlaSubmit = async search => {
     if (search.trim() === '') return;
 
-    this.setState({ status: 'pending' });
+    this.setState({ isLoading: true });
+
     const response = await axios.get(`&per_page=12&page=1&q=${search}`);
 
-    if (!response.data.hits[0]) {
+    if (response.data.totalHits === 0) {
       this.setState({
         status: 'rejected',
+        isLoading: false,
       });
       return;
     }
@@ -38,20 +42,31 @@ export class App extends Component {
         tags,
       })
     );
+
     this.setState({
       images: [...imageResult],
       query: search,
       status: 'resolved',
+      isLoading: false,
     });
+
+    if (response.data.hits.length === 12) {
+      this.setState({ isLoadMore: true });
+    } else {
+      this.setState({ isLoadMore: false });
+    }
   };
 
   page = 1;
   handleLoadMore = async query => {
     this.page += 1;
-    this.setState({ status: 'pending' });
+
+    this.setState({ isLoading: true });
+
     const response = await axios.get(
       `&per_page=12&page=${this.page}&q=${query}`
     );
+
     const imageResult = response.data.hits.map(
       ({ id, webformatURL, largeImageURL, tags }) => ({
         id,
@@ -60,14 +75,22 @@ export class App extends Component {
         tags,
       })
     );
+
     this.setState(prev => ({
       images: [...prev.images, ...imageResult],
       status: 'resolved',
+      isLoading: false,
     }));
+
+    if (response.data.hits.length === 12) {
+      this.setState({ isLoadMore: true });
+    } else {
+      this.setState({ isLoadMore: false });
+    }
   };
 
   render() {
-    const { images, query, status } = this.state;
+    const { images, query, status, isLoading, isLoadMore } = this.state;
     return (
       <AppContainer>
         <SearchBar onSubmit={this.handlaSubmit} />
@@ -83,7 +106,7 @@ export class App extends Component {
           </ErrorText>
         )}
         {status === 'resolved' && <ImageGallery gallery={images} />}
-        {status === 'pending' && (
+        {isLoading && (
           <ContainerLoader>
             <MagnifyingGlass
               height="320"
@@ -102,9 +125,7 @@ export class App extends Component {
             />
           </ContainerLoader>
         )}
-        {status === 'resolved' && (
-          <Button onClick={this.handleLoadMore} search={query} />
-        )}
+        {isLoadMore && <Button onClick={this.handleLoadMore} search={query} />}
       </AppContainer>
     );
   }
