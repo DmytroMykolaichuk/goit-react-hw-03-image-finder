@@ -14,29 +14,28 @@ export class Modal extends Component {
   }
 
   handleCloseECC = e => {
-    const { onClose } = this.props;
+    const { onCloseModal } = this.props;
 
     if (e.key === 'Escape') {
-      onClose();
+      onCloseModal();
     }
   };
 
   handleCloseBackdrop = e => {
-    const { onClose } = this.props;
+    const { onCloseModal } = this.props;
 
     if (e.currentTarget === e.target) {
-      onClose();
-      e.stopPropagation();
+      onCloseModal();
     }
   };
 
   render() {
-    const { largeImageURL, tags } = this.props;
+    const { largeImage, tags } = this.props;
 
     return createPortal(
       <div className="Overlay" onClick={this.handleCloseBackdrop}>
         <div className="Modal">
-          <img src={largeImageURL} alt={tags} width="800" height="600" />
+          <img src={largeImage} alt={tags} width="1000" />
         </div>
       </div>,
       modalRoot
@@ -45,7 +44,7 @@ export class Modal extends Component {
 }
 
 Modal.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  largeImageURL: PropTypes.string.isRequired,
+  onCloseModal: PropTypes.func.isRequired,
+  largeImage: PropTypes.string.isRequired,
   tags: PropTypes.string.isRequired,
 };

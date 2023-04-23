@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types';
 
-export const Button = ({ onClick, search }) => {
+export const Button = ({ onClick }) => {
   return (
-    <button type="button" onClick={() => onClick(search)} className="Button">
+    <button type="button" onClick={() => onClick()} className="Button">
       Load more
     </button>
   );
 };
 
 Button.propTypes = {
-  search: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
 };
